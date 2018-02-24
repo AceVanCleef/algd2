@@ -59,7 +59,6 @@ public class SortedSet<E extends Comparable<? super E>> extends
 
 	@Override
 	public boolean contains(Object o) {
-		// TODO must be implemented
 		//#Difference-to-Unsorted: using binary search O(log(n)) instead of linear search O(n).
 		int index = Arrays.binarySearch(data, 0, size, o);
 		return index >= 0;
