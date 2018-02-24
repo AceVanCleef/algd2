@@ -8,30 +8,61 @@ public class SortedSet<E extends Comparable<? super E>> extends
 	public static final int DEFAULT_CAPACITY = 100;
 	private Object[] data;
 
+	private int capacity;
+	private int size = 0;
+
 	public SortedSet() {
 		this(DEFAULT_CAPACITY);
 	}
 
 	public SortedSet(int capacity) {
 		data = new Object[capacity];
+		this.capacity = capacity;
 	}
 
 	@Override
 	public boolean add(E e) {
-		// TODO implement unless collection shall be immutable
-		throw new UnsupportedOperationException();
+		if (e == null) throw new NullPointerException("null not supported.");
+		//#Difference-to-bag:
+		if (contains(e)) return false;
+		if (size < capacity){
+			data[size++] = e;
+			//#Difference-to-Unsorted:
+			Arrays.sort(data, 0, size); //Dual-pivot quick sort O(n*log(n))
+			return true;
+		} else {
+			throw new IllegalStateException();
+		}
 	}
 
 	@Override
 	public boolean remove(Object o) {
-		// TODO implement unless collection shall be immutable
-		throw new UnsupportedOperationException();
+		System.out.println(Arrays.toString(data) + " before");
+
+		if (contains(o)){
+			//Lücke finden //#Difference-to-Unsorted:
+			int index = Arrays.binarySearch(data, 0, size, o);
+			//nachrücken:
+			for (int j = index + 1; j < size; j++){
+				System.out.println("length: " + data.length + " size:  " + size);
+				data[j - 1] = data[j]; //adv. over data[j] = data[j + 1] -> no IndexOutOfBoundExc.
+				//Semantisch: j = i + 1 -> Element, welches nachgerückt werden soll; j - 1 -> Lücke.
+			}
+			data[size - 1] = null;	//remove
+			size--;
+			System.out.println(Arrays.toString(data) + " after");
+
+			return true;
+		}
+		return false;
 	}
 
 	@Override
 	public boolean contains(Object o) {
 		// TODO must be implemented
-		throw new UnsupportedOperationException();
+		//#Difference-to-Unsorted: using binary search O(log(n)) instead of linear search O(n).
+		int index = Arrays.binarySearch(data, 0, size, o);
+		return index >= 0;
 	}
 
 	@Override
@@ -41,8 +72,8 @@ public class SortedSet<E extends Comparable<? super E>> extends
 
 	@Override
 	public int size() {
-		// TODO must be implemented
-		return 0;
+		System.out.println("length: " + data.length + " size:  " + size);
+		return size;
 	}
 
 	public static void main(String[] args) {

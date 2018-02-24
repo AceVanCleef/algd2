@@ -17,24 +17,53 @@ public class UnsortedSet<E> extends AbstractArrayCollection<E> implements
 
 	public UnsortedSet(int capacity) {
 		data = new Object[capacity];
+		this.capacity = capacity;
 	}
 
 	@Override
 	public boolean add(E e) {
-		// TODO implement unless collection shall be immutable
-		throw new UnsupportedOperationException();
+		if (e == null) throw new NullPointerException("null not supported.");
+		//#Difference-to-bag:
+		if (contains(e)) return false;
+		if (size < capacity){
+			data[size++] = e;
+			return true;
+		} else {
+			throw new IllegalStateException();
+		}
 	}
 
 	@Override
 	public boolean remove(Object o) {
-		// TODO implement unless collection shall be immutable
-		throw new UnsupportedOperationException();
+		System.out.println(Arrays.toString(data) + " before");
+
+		if (contains(o)){
+			int i = 0;
+			//Lücke finden
+			while (i < size && !data[i].equals(o)){
+				i++;
+			}
+			//nachrücken:
+			for (int j = i + 1; j < size; j++){
+				System.out.println("length: " + data.length + " size:  " + size);
+				data[j - 1] = data[j]; //adv. over data[j] = data[j + 1] -> no IndexOutOfBoundExc.
+				//Semantisch: j = i + 1 -> Element, welches nachgerückt werden soll; j - 1 -> Lücke.
+			}
+			data[size - 1] = null;	//remove
+			size--;
+			System.out.println(Arrays.toString(data) + " after");
+
+			return true;
+		}
+		return false;
 	}
 
 	@Override
 	public boolean contains(Object o) {
-		// TODO must be implemented
-		throw new UnsupportedOperationException();
+		for (int i = 0; i < size; i++){
+			if (data[i].equals(o)) return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -44,8 +73,8 @@ public class UnsortedSet<E> extends AbstractArrayCollection<E> implements
 
 	@Override
 	public int size() {
-		// TODO must be implemented
-		return 0;
+		System.out.println("length: " + data.length + " size:  " + size);
+		return size;
 	}
 
 	public static void main(String[] args) {
