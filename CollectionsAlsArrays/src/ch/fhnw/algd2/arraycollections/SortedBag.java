@@ -24,6 +24,8 @@ public class SortedBag<E extends Comparable<? super E>> extends
 		if (e == null) throw new NullPointerException("null not supported.");
 		if (size < capacity){
 			data[size++] = e;
+			//#Difference-to-UnsortedBag:
+			Arrays.sort(data, 0, size); //Dual pivot quick sort O(n*log(n))
 			return true;
 		} else {
 			throw new IllegalStateException();
