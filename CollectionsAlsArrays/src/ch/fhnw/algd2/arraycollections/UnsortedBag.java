@@ -38,8 +38,6 @@ public class UnsortedBag<E> extends AbstractArrayCollection<E> {
 	 */
 	@Override
 	public boolean remove(Object o) {
-		// TODO implement unless collection shall be immutable
-		//throw new UnsupportedOperationException();
 		System.out.println(Arrays.toString(data) + " before");
 
 		if (contains(o)){
