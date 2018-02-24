@@ -8,6 +8,9 @@ public class UnsortedSet<E> extends AbstractArrayCollection<E> implements
 	public static final int DEFAULT_CAPACITY = 100;
 	private Object[] data;
 
+	private int capacity;
+	private int size = 0;
+
 	public UnsortedSet() {
 		this(DEFAULT_CAPACITY);
 	}

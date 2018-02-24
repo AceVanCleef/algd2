@@ -24,8 +24,8 @@ public class SortedBag<E extends Comparable<? super E>> extends
 		if (e == null) throw new NullPointerException("null not supported.");
 		if (size < capacity){
 			data[size++] = e;
-			//#Difference-to-UnsortedBag:
-			Arrays.sort(data, 0, size); //Dual pivot quick sort O(n*log(n))
+			//#Difference-to-Unsorted:
+			Arrays.sort(data, 0, size); //Dual-pivot quick sort O(n*log(n))
 			return true;
 		} else {
 			throw new IllegalStateException();
@@ -37,13 +37,10 @@ public class SortedBag<E extends Comparable<? super E>> extends
 		System.out.println(Arrays.toString(data) + " before");
 
 		if (contains(o)){
-			int i = 0;
-			//Lücke finden
-			while (i < size && !data[i].equals(o)){
-				i++;
-			}
+			//Lücke finden //#Difference-to-Unsorted:
+			int index = Arrays.binarySearch(data, 0, size, o);
 			//nachrücken:
-			for (int j = i + 1; j < size; j++){
+			for (int j = index + 1; j < size; j++){
 				System.out.println("length: " + data.length + " size:  " + size);
 				data[j - 1] = data[j]; //adv. over data[j] = data[j + 1] -> no IndexOutOfBoundExc.
 				//Semantisch: j = i + 1 -> Element, welches nachgerückt werden soll; j - 1 -> Lücke.
@@ -59,10 +56,9 @@ public class SortedBag<E extends Comparable<? super E>> extends
 
 	@Override
 	public boolean contains(Object o) {
-		for (int i = 0; i < size; i++){
-			if (data[i].equals(o)) return true;
-		}
-		return false;
+		//#Difference-to-Unsorted: using binary search O(log(n)) instead of linear search O(n).
+		int index = Arrays.binarySearch(data, 0, size, o);
+		return index >= 0;
 	}
 
 	@Override
