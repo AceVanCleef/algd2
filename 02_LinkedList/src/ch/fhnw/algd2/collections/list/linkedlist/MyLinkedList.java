@@ -111,10 +111,33 @@ public class MyLinkedList<E> extends MyAbstractList<E> {
 		++size;
 	}
 
+	//deletion: [A]->[B]->[C]-| ; [A]->[C]
 	@Override
 	public E remove(int index) {
-		// TODO implement this operation (part D)
-		throw new UnsupportedOperationException();
+		if (index >= size || index < 0) throw new IndexOutOfBoundsException("invalid index: too low or high");
+		if (size == 0)	throw new IndexOutOfBoundsException("empty list");			//case: empty list
+		if (index == 0 && size !=  0){ 			//case: get first element
+			Node<E> oldFirst = first;
+			first = first.next;
+			--size;
+			return oldFirst.elem;
+		}
+		//moving through the list
+		Node<E> current = first;
+		Node<E> previous = null;
+		int i = 0;
+		while (current != null && i != index) { //or 'i < size' ) {
+			previous = current;
+			current = current.next;
+			++i;
+		}
+		previous.next = current.next; //removement of element at index
+		if (i == size - 1) {			//case: get last element
+			last = previous;
+			last.next = null;
+		}
+		--size;
+		return current.elem;
 	}
 
 	@Override
