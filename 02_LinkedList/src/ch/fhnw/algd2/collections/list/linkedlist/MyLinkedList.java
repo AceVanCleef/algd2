@@ -131,10 +131,9 @@ public class MyLinkedList<E> extends MyAbstractList<E> {
 			current = current.next;
 			++i;
 		}
-		previous.next = current.next; //removement of element at index
+		previous.next = current.next; //removes element at index //case: removing last elem --> previous.next = null
 		if (i == size - 1) {			//case: get last element
-			last = previous;
-			last.next = null;
+			last = previous; //previous.next will be null --> last.next = null;
 		}
 		--size;
 		return current.elem;
