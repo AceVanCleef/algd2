@@ -59,8 +59,21 @@ public class MyLinkedList<E> extends MyAbstractList<E> {
 
 	@Override
 	public E get(int index) {
-		// TODO implement this operation (part D)
-		throw new UnsupportedOperationException();
+        if (index >= size || index < 0) throw new IndexOutOfBoundsException("invalid index: too low or high");
+        if (size == 0)	throw new IndexOutOfBoundsException("empty list");			//case: empty list
+        if (index == 0 && size !=  0){ 			//case: get first element
+            return first.elem;
+        } else if (index == size - 1) {			//case: get last element
+            return last.elem;
+        }
+        //moving through the list
+        Node<E> current = first;
+        int i = 0;
+        while (current != null && i != index) { //or 'i < size' ?
+            current = current.next;
+            ++i;
+        }
+        return current.elem;
 	}
 
 	@Override
@@ -79,6 +92,7 @@ public class MyLinkedList<E> extends MyAbstractList<E> {
 			++size;
 			return;
 		}
+		//moving through the list
 		Node<E> current = first;
 		Node<E> previous = null;
 		int i = 0;
