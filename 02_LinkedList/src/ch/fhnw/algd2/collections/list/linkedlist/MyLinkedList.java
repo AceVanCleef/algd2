@@ -126,7 +126,7 @@ public class MyLinkedList<E> extends MyAbstractList<E> {
 		Node<E> current = first;
 		Node<E> previous = null;
 		int i = 0;
-		while (current != null && i != index) { //or 'i < size' ) {
+		while (current != null && i != index) { //or 'i < size'
 			previous = current;
 			current = current.next;
 			++i;
