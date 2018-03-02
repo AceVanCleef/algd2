@@ -50,7 +50,7 @@ public class MyLinkedList<E> extends MyAbstractList<E> {
 			previous.next = null;
 			last = previous;
 		} else {
-			previous.next = current.next;	//redirect reference
+			previous.next = current.next;	//redirect reference ([a]->[b]->[c] zu [a]->[c]: Überbrückt B.)
 		}
 
 		--size;
