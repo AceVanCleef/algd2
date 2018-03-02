@@ -136,7 +136,7 @@ public class MyLinkedList<E> extends MyAbstractList<E> {
 		previous.next = current.next; //removes element at index
 		if (i == size - 1) {			//case: get last element
 			//Note: previous.next will be automatically equal null.
-			// 	Reason: 'previous = current', current is last elem. and 'current.next == null'
+			// 	Reason: 'previous = current' && 'previous.next = current.next', current is last elem. and 'current.next == null'
 			last = previous; //last.next will be null because of 'previous.next == null';
 		}
 		--size;
