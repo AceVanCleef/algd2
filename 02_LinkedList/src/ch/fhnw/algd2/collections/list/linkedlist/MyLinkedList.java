@@ -61,7 +61,8 @@ public class MyLinkedList<E> extends MyAbstractList<E> {
 	public E get(int index) {
         if (index >= size || index < 0) throw new IndexOutOfBoundsException("invalid index: too low or high");
         if (size == 0)	throw new IndexOutOfBoundsException("empty list");			//case: empty list
-        if (index == 0 && size !=  0){ 			//case: get first element
+        //Note: 'size !=  0' is guaranteed from here on.
+		if (index == 0){ 			//case: get first element.
             return first.elem;
         } else if (index == size - 1) {			//case: get last element
             return last.elem;
@@ -69,7 +70,7 @@ public class MyLinkedList<E> extends MyAbstractList<E> {
         //moving through the list
         Node<E> current = first;
         int i = 0;
-        while (current != null && i != index) { //or 'i < size' ?
+        while (i != index) { //No guard such as 'i < size' or 'current!= null' needed. Valid index range already tested.
             current = current.next;
             ++i;
         }
@@ -79,7 +80,7 @@ public class MyLinkedList<E> extends MyAbstractList<E> {
 	@Override
 	public void add(int index, E element) {
 		if (element == null) throw new NullPointerException("null not allowed");
-		if (index > size || index < 0) throw new IndexOutOfBoundsException("Index too large");
+		if (index > size || index < 0) throw new IndexOutOfBoundsException("Index too large or small");
 		if (size == 0){						//case: empty list
 			first = new Node<>(element);
 			last = first;
@@ -96,7 +97,7 @@ public class MyLinkedList<E> extends MyAbstractList<E> {
 		Node<E> current = first;
 		Node<E> previous = null;
 		int i = 0;
-		while (current != null && i != index) {
+		while (i != index) {	//No guard such as 'current != null' needed. Valid index range already tested.
 			previous = current;
 			current = current.next;
 			++i;
@@ -116,7 +117,8 @@ public class MyLinkedList<E> extends MyAbstractList<E> {
 	public E remove(int index) {
 		if (index >= size || index < 0) throw new IndexOutOfBoundsException("invalid index: too low or high");
 		if (size == 0)	throw new IndexOutOfBoundsException("empty list");			//case: empty list
-		if (index == 0 && size !=  0){ 			//case: get first element
+		//Note: 'size !=  0' is guaranteed from here on.
+		if (index == 0){ 				//case: get first element
 			Node<E> oldFirst = first;
 			first = first.next;
 			--size;
@@ -126,14 +128,16 @@ public class MyLinkedList<E> extends MyAbstractList<E> {
 		Node<E> current = first;
 		Node<E> previous = null;
 		int i = 0;
-		while (current != null && i != index) { //or 'i < size'
+		while (i != index) {	//No guard such as 'current != null' or 'i < size' needed. Valid index range already tested.
 			previous = current;
 			current = current.next;
 			++i;
 		}
-		previous.next = current.next; //removes element at index //case: removing last elem --> previous.next = null
+		previous.next = current.next; //removes element at index
 		if (i == size - 1) {			//case: get last element
-			last = previous; //previous.next will be null --> last.next = null;
+			//Note: previous.next will be automatically equal null.
+			// 	Reason: 'previous = current', current is last elem. and 'current.next == null'
+			last = previous; //last.next will be null because of 'previous.next == null';
 		}
 		--size;
 		return current.elem;
