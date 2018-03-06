@@ -1,6 +1,7 @@
 package ch.fhnw.algd2.collections.list.linkedlist;
 
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -14,6 +15,9 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 
 	private Node<E> last;
 
+	//#Concurrent Modification (Iterator)
+	private int generationCounter = 0;
+
 	@Override
 	public boolean add(E e) {
 		if (e == null) throw new NullPointerException("null not allowed");
@@ -25,6 +29,7 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 		}
 		last = n;
 		++size;
+		++generationCounter;
 		return true;
 	}
 
@@ -48,9 +53,9 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 			previous = current;
 			current = current.next;
 		}
-		if (first == current) {				//special case: first element has to be removed
+		if (first == current) {				//special case: first currentElement has to be removed
 			first = current.next;
-		} else if(last == current) {		//special case: last element has to be removed
+		} else if(last == current) {		//special case: last currentElement has to be removed
 			previous.next = null;
 			last = previous;
 		} else {
@@ -58,6 +63,7 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 		}
 
 		--size;
+		++generationCounter;
 		return true;
 	}
 
@@ -66,15 +72,15 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 		if (index >= size || index < 0) throw new IndexOutOfBoundsException("invalid index: too low or high");
 		if (size == 0)	throw new IndexOutOfBoundsException("empty list");			//case: empty list
 		//Note: 'size !=  0' is guaranteed from here on.
-		if (index == 0){ 			//case: get first element.
+		if (index == 0){ 			//case: get first currentElement.
 			return first.elem;
-		} else if (index == size - 1) {			//case: get last element
+		} else if (index == size - 1) {			//case: get last currentElement
 			return last.elem;
 		}
 		//moving through the list
 		Node<E> current = first;
 		int i = 0;
-		while (i != index) { //No guard such as 'i < size' or 'current!= null' needed. Valid index range already tested.
+		while (i != index) { //No guard such as 'i < size' or 'next!= null' needed. Valid index range already tested.
 			current = current.next;
 			++i;
 		}
@@ -89,31 +95,34 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 			first = new Node<>(element);
 			last = first;
 			++size;
+			++generationCounter;
 			return;
 		}
-		else if (index == size) {			//case: adding as last element
+		else if (index == size) {			//case: adding as last currentElement
 			last.next = new Node<>(element);
 			last = last.next;
 			++size;
+			++generationCounter;
 			return;
 		}
 		//moving through the list
 		Node<E> current = first;
 		Node<E> previous = null;
 		int i = 0;
-		while (i != index) {	//No guard such as 'current != null' needed. Valid index range already tested.
+		while (i != index) {	//No guard such as 'next != null' needed. Valid index range already tested.
 			previous = current;
 			current = current.next;
 			++i;
 		}
 		Node<E> n = new Node<>(element, current);
-		if (i == 0){					//case: not empty list, but adding as first element
+		if (i == 0){					//case: not empty list, but adding as first currentElement
 			first = n;
 		} else {						//case: adding in-between
 			previous.next = n;
 		}
 		last = n;
 		++size;
+		++generationCounter;
 	}
 
 	//deletion: [A]->[B]->[C]-| ; [A]->[C]
@@ -122,28 +131,30 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 		if (index >= size || index < 0) throw new IndexOutOfBoundsException("invalid index: too low or high");
 		if (size == 0)	throw new IndexOutOfBoundsException("empty list");			//case: empty list
 		//Note: 'size !=  0' is guaranteed from here on.
-		if (index == 0){ 				//case: get first element
+		if (index == 0){ 				//case: get first currentElement
 			Node<E> oldFirst = first;
 			first = first.next;
 			--size;
+			++generationCounter;
 			return oldFirst.elem;
 		}
 		//moving through the list
 		Node<E> current = first;
 		Node<E> previous = null;
 		int i = 0;
-		while (i != index) {	//No guard such as 'current != null' or 'i < size' needed. Valid index range already tested.
+		while (i != index) {	//No guard such as 'next != null' or 'i < size' needed. Valid index range already tested.
 			previous = current;
 			current = current.next;
 			++i;
 		}
-		previous.next = current.next; //removes element at index
-		if (i == size - 1) {			//case: get last element
+		previous.next = current.next; //removes currentElement at index
+		if (i == size - 1) {			//case: get last currentElement
 			//Note: previous.next will be automatically equal null.
-			// 	Reason: 'previous = current' && 'previous.next = current.next', current is last elem. and 'current.next == null'
+			// 	Reason: 'previous = next' && 'previous.next = next.next', next is last elem. and 'next.next == null'
 			last = previous; //last.next will be null because of 'previous.next == null';
 		}
 		--size;
+		++generationCounter;
 		return current.elem;
 	}
 
@@ -186,25 +197,41 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 
 	private class MyIterator implements Iterator<E> {
 
+		//#Concurrent Modification
+		private int generationNumber = generationCounter;
+
 		//Access to data structure (the list)
 		private Node<E> next = first; //Note: MyIterator sees members of outer class.
+		E currentElement;
+		private boolean mayremove = false;
 
 		@Override
 		public boolean hasNext() {
-			return next != null;
+			return next != null;		//Frage: next oder next.next?
 		}
 
 		@Override
 		public E next() {
-			if(next == null) throw new NoSuchElementException("No next element available");
-			Node<E> current = next;
+			if(next == null) throw new NoSuchElementException("No next currentElement available");
+			if(generationNumber != generationCounter) throw new ConcurrentModificationException("Iterator outdated");
+			currentElement = next.elem;
 			next = next.next;
-			return current.elem;
+			mayremove = true;
+			return currentElement;
 		}
 
 		@Override
 		public void remove() {
-			throw new UnsupportedOperationException();
+			if(generationNumber != generationCounter) throw new ConcurrentModificationException("Iterator outdated");
+			if (currentElement == null) throw new IllegalStateException("Before First Next Call not allowed");
+			if (!mayremove) throw new IllegalStateException("removed has already been called once without .next() in-between.");
+			SinglyLinkedList.this.remove(currentElement);
+			if (next != null){		//prevents NullPointerExc at last element.
+				currentElement = next.elem;
+				next = next.next;
+			}
+			mayremove = false;
+			++generationNumber;
 		}
 	}
 

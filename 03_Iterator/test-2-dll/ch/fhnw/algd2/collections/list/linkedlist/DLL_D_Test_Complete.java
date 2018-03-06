@@ -5,7 +5,7 @@ import ch.fhnw.algd2.collections.list.MyAbstractList;
 
 /**
  * Additional Tests: - Order (list-semantic: Tail adding) by reference - add
- * element at specific position (indexoutofbounds check) - remove element from
+ * currentElement at specific position (indexoutofbounds check) - remove currentElement from
  * specific position (indexoutofbounds check)
  * 
  * @author Michael

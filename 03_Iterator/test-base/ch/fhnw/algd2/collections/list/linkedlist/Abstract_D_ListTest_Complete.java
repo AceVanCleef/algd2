@@ -11,7 +11,7 @@ import org.junit.Test;
 
 /**
  * Additional Tests: - Order (list-semantic: Tail adding) by reference - add
- * element at specific position (indexoutofbounds check) - remove element from
+ * currentElement at specific position (indexoutofbounds check) - remove currentElement from
  * specific position (indexoutofbounds check)
  * 
  * @author Michael
@@ -30,7 +30,7 @@ public abstract class Abstract_D_ListTest_Complete extends
 	}
 
 	/*
-	 * Add element at specific position
+	 * Add currentElement at specific position
 	 */
 	@Test
 	public void add_Numbers5To1AtIndex0InSequence_NumbersInAscendingOrder() {
@@ -135,7 +135,7 @@ public abstract class Abstract_D_ListTest_Complete extends
 	}
 
 	/*
-	 * Remove element at specific position
+	 * Remove currentElement at specific position
 	 */
 	@Test
 	public void remove_Index0WhenNumbers1To5Added_Element1Removed() {

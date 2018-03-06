@@ -47,9 +47,9 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 			previous = current;
 			current = current.next;
 		}
-		if (first == current) {				//special case: first element has to be removed
+		if (first == current) {				//special case: first currentElement has to be removed
 			first = current.next;
-		} else if(last == current) {		//special case: last element has to be removed
+		} else if(last == current) {		//special case: last currentElement has to be removed
 			previous.next = null;
 			last = previous;
 		} else {
@@ -65,9 +65,9 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 		if (index >= size || index < 0) throw new IndexOutOfBoundsException("invalid index: too low or high");
 		if (size == 0)	throw new IndexOutOfBoundsException("empty list");			//case: empty list
 		//Note: 'size !=  0' is guaranteed from here on.
-		if (index == 0){ 			//case: get first element.
+		if (index == 0){ 			//case: get first currentElement.
 			return first.elem;
-		} else if (index == size - 1) {			//case: get last element
+		} else if (index == size - 1) {			//case: get last currentElement
 			return last.elem;
 		}
 		//moving through the list
@@ -90,7 +90,7 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 			++size;
 			return;
 		}
-		else if (index == size) {			//case: adding as last element
+		else if (index == size) {			//case: adding as last currentElement
 			last.next = new Node<>(element);
 			last = last.next;
 			++size;
@@ -106,7 +106,7 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 			++i;
 		}
 		Node<E> n = new Node<>(previous, element, current);
-		if (i == 0){					//case: not empty list, but adding as first element
+		if (i == 0){					//case: not empty list, but adding as first currentElement
 			first = n;
 		} else {						//case: adding in-between
 			previous.next = n;
@@ -121,7 +121,7 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 		if (index >= size || index < 0) throw new IndexOutOfBoundsException("invalid index: too low or high");
 		if (size == 0)	throw new IndexOutOfBoundsException("empty list");			//case: empty list
 		//Note: 'size !=  0' is guaranteed from here on.
-		if (index == 0){ 				//case: get first element
+		if (index == 0){ 				//case: get first currentElement
 			Node<E> oldFirst = first;
 			first = first.next;
 			--size;
@@ -136,8 +136,8 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 			current = current.next;
 			++i;
 		}
-		previous.next = current.next; //removes element at index
-		if (i == size - 1) {			//case: get last element
+		previous.next = current.next; //removes currentElement at index
+		if (i == size - 1) {			//case: get last currentElement
 			//Note: previous.next will be automatically equal null.
 			// 	Reason: 'previous = current' && 'previous.next = current.next', current is last elem. and 'current.next == null'
 			last = previous; //last.next will be null because of 'previous.next == null';

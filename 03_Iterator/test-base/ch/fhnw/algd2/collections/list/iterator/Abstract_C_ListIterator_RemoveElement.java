@@ -177,13 +177,15 @@ public abstract class Abstract_C_ListIterator_RemoveElement extends
 	private void removeElementAtPositionWithIterator(int indexToRemove,
 			Integer expectToBeRemoved) {
 		Iterator<Integer> it = getIterator();
+		Integer willBeRemoved = null;
 		int i = 0;
-		for (; i < indexToRemove; i++) {
+		for (; i <= indexToRemove; i++) {
 			assertTrue(it.hasNext());
-			it.next();
+			willBeRemoved = it.next();
 		}
-		assertTrue(it.hasNext());
-		assertSame(expectToBeRemoved, it.next());
+		//assertTrue(it.hasNext());
+		//willBeRemoved = it.next();
+		assertSame(expectToBeRemoved, willBeRemoved);
 		it.remove();
 		for (i = i + 1; i < allNumbers.length; i++) {
 			assertTrue(it.hasNext());
