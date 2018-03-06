@@ -203,7 +203,8 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 		//Access to data structure (the list)
 		private Node<E> next = first; //Note: MyIterator sees members of outer class.
 		E currentElement;
-		private boolean mayremove = false;
+		private boolean mayRemove = false;
+		private boolean alreadyMoved = false;
 
 		@Override
 		public boolean hasNext() {
@@ -212,11 +213,16 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 
 		@Override
 		public E next() {
+			//Todo: trying to fix jumping issue after using .remove()
+			/*if (alreadyMoved){
+				alreadyMoved = false;
+				return currentElement;
+			}*/
 			if(next == null) throw new NoSuchElementException("No next currentElement available");
 			if(generationNumber != generationCounter) throw new ConcurrentModificationException("Iterator outdated");
 			currentElement = next.elem;
 			next = next.next;
-			mayremove = true;
+			mayRemove = true;
 			return currentElement;
 		}
 
@@ -224,13 +230,14 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 		public void remove() {
 			if(generationNumber != generationCounter) throw new ConcurrentModificationException("Iterator outdated");
 			if (currentElement == null) throw new IllegalStateException("Before First Next Call not allowed");
-			if (!mayremove) throw new IllegalStateException("removed has already been called once without .next() in-between.");
+			if (!mayRemove) throw new IllegalStateException("removed has already been called once without .next() in-between.");
 			SinglyLinkedList.this.remove(currentElement);
 			if (next != null){		//prevents NullPointerExc at last element.
 				currentElement = next.elem;
 				next = next.next;
+				//alreadyMoved = true;
 			}
-			mayremove = false;
+			mayRemove = false;
 			++generationNumber;
 		}
 	}
