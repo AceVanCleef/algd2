@@ -20,9 +20,10 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 		if (size == 0){
 			first = n;
 		} else if (size > 0) {
-			last.next = n;
+			n.prev = last;  //[last]<-[n]
+			last.next = n;	//[last]<->[n]
 		}
-		last = n;
+		last = n;			//[n-1]<->[n, last]
 		++size;
 		return true;
 	}
@@ -41,6 +42,13 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 	public boolean remove(Object o) {
 		if (o == null) throw new NullPointerException("null not allowed");
 		if (!contains(o)) return false;
+		/*if(last.elem.equals(o)) {		//special case: last currentElement has to be removed
+			//reduces asympt. complexity to O(1) instead of O(n)
+			last = last.prev;
+			last.next = null;
+			--size;
+			return true;
+		}*/
 		Node<E> current = first;
 		Node<E> previous = null;
 		while (current != null && !(current.elem.equals(o))){
@@ -49,13 +57,18 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 		}
 		if (first == current) {				//special case: first currentElement has to be removed
 			first = current.next;
-		} else if(last == current) {		//special case: last currentElement has to be removed
-			previous.next = null;
-			last = previous;
-		} else {
-			previous.next = current.next;	//redirect reference ([a]->[b]->[c] zu [a]->[c]: Überbrückt B.)
-		}
+		} else if(last == current) {        //special case: last currentElement has to be removed
+			//Note: can't put this section before the linear search.
+			// Reason: In [1,2,3,4,5,2], delete(new Integer(2)) would delete the 2 at index 5.
+			//			What should happen is that the 2 at index 2 gets deleted first acc. to unit tests.
+			//#Question: Why?
 
+			last = last.prev;
+			last.next = null;
+		} else {
+			previous.next = current.next;	//redirect next reference ([a]->[b]->[c] to [a]->[c]: Überbrückt B.)
+			current.next.prev = current.prev; //redirect prev reference [a[<-[b]<-[c] to [a]<-[c]
+		}
 		--size;
 		return true;
 	}
@@ -91,8 +104,8 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 			return;
 		}
 		else if (index == size) {			//case: adding as last currentElement
-			last.next = new Node<>(element);
-			last = last.next;
+			last.next = new Node<>(last, element, null); 	//[last]<->[n]-|
+			last = last.next;	//[n-1]<->[n, last]-|
 			++size;
 			return;
 		}
@@ -105,13 +118,16 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 			current = current.next;
 			++i;
 		}
-		Node<E> n = new Node<>(previous, element, current);
+		Node<E> n = new Node<>(previous, element, current);		//[previous]<-[n]->[current]
 		if (i == 0){					//case: not empty list, but adding as first currentElement
 			first = n;
 		} else {						//case: adding in-between
-			previous.next = n;
+			previous.next = n;	//[previous]<->[n]->[current]
+			current.prev = n;		//[previous]<->[n]<->[current]
 		}
-		last = n;
+		if (i == size - 1){
+			last = current;
+		}
 		++size;
 	}
 
@@ -127,6 +143,14 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 			--size;
 			return oldFirst.elem;
 		}
+		if (index == size - 1){
+			//reduces asympt. complexity to O(1) instead of O(n)
+			Node<E> oldLast = last;
+			last = last.prev;
+			last.next = null;
+			--size;
+			return oldLast.elem;
+		}
 		//moving through the list
 		Node<E> current = first;
 		Node<E> previous = null;
@@ -136,12 +160,9 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 			current = current.next;
 			++i;
 		}
-		previous.next = current.next; //removes currentElement at index
-		if (i == size - 1) {			//case: get last currentElement
-			//Note: previous.next will be automatically equal null.
-			// 	Reason: 'previous = current' && 'previous.next = current.next', current is last elem. and 'current.next == null'
-			last = previous; //last.next will be null because of 'previous.next == null';
-		}
+		//remove currentElement at index
+		previous.next = current.next; //redirect next reference ([a]->[b]->[c] to [a]->[c]: Überbrückt B.)
+		current.next.prev = previous; //redirect prev reference [a[<-[b]<-[c] to [a]<-[c]
 		--size;
 		return current.elem;
 	}

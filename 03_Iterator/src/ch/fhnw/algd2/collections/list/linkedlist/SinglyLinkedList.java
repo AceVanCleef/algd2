@@ -120,7 +120,9 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 		} else {						//case: adding in-between
 			previous.next = n;
 		}
-		last = n;
+		if (i == size - 1){
+			last = current;
+		}
 		++size;
 		++generationCounter;
 	}
