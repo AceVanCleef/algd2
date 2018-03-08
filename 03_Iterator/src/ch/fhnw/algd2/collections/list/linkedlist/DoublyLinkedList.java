@@ -3,6 +3,7 @@ package ch.fhnw.algd2.collections.list.linkedlist;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 import ch.fhnw.algd2.collections.list.MyAbstractList;
 
@@ -226,14 +227,20 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 	}
 
 	private class MyListIterator implements Iterator<E> {
+
+		private Node<E> next = first;
+
 		@Override
 		public boolean hasNext() {
-			throw new UnsupportedOperationException();
+			return next != null;
 		}
 
 		@Override
 		public E next() {
-			throw new UnsupportedOperationException();
+			if (!hasNext()) throw new NoSuchElementException("No next element available");
+			Node<E> current = next;
+			next = next.next;
+			return current.elem;
 		}
 
 		@Override
