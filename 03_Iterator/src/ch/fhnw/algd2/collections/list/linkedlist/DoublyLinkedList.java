@@ -1,9 +1,6 @@
 package ch.fhnw.algd2.collections.list.linkedlist;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import ch.fhnw.algd2.collections.list.MyAbstractList;
 
@@ -13,6 +10,8 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 	private Node<E> first;
 
 	private Node<E> last;
+
+	private int generationCounter = 0;
 
 	@Override
 	public boolean add(E e) {
@@ -26,6 +25,7 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 		}
 		last = n;			//[n-1]<->[n, last]
 		++size;
+		++generationCounter;
 		return true;
 	}
 
@@ -71,6 +71,7 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 			current.next.prev = current.prev; //redirect prev reference [a[<-[b]<-[c] to [a]<-[c]
 		}
 		--size;
+		++generationCounter;
 		return true;
 	}
 
@@ -102,12 +103,14 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 			first = new Node<>(element);
 			last = first;
 			++size;
+			++generationCounter;
 			return;
 		}
 		else if (index == size) {			//case: adding as last currentElement
 			last.next = new Node<>(last, element, null); 	//[last]<->[n]-|
 			last = last.next;	//[n-1]<->[n, last]-|
 			++size;
+			++generationCounter;
 			return;
 		}
 		//moving through the list
@@ -130,6 +133,7 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 			last = current;
 		}
 		++size;
+		++generationCounter;
 	}
 
 	//deletion: [A]->[B]->[C]-| ; [A]->[C]
@@ -142,6 +146,7 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 			Node<E> oldFirst = first;
 			first = first.next;
 			--size;
+			++generationCounter;
 			return oldFirst.elem;
 		}
 		if (index == size - 1){
@@ -150,6 +155,7 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 			last = last.prev;
 			last.next = null;
 			--size;
+			++generationCounter;
 			return oldLast.elem;
 		}
 		//moving through the list
@@ -165,6 +171,7 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 		previous.next = current.next; //redirect next reference ([a]->[b]->[c] to [a]->[c]: Überbrückt B.)
 		current.next.prev = previous; //redirect prev reference [a[<-[b]<-[c] to [a]<-[c]
 		--size;
+		++generationCounter;
 		return current.elem;
 	}
 
@@ -228,7 +235,13 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 
 	private class MyListIterator implements Iterator<E> {
 
-		private Node<E> next = first;
+		private Node<E> next = first;	//initialising with first leads to issues.
+
+		private boolean initPhase = true;
+
+		private boolean mayRemove = false;
+
+		private int generationNumber = generationCounter;
 
 		@Override
 		public boolean hasNext() {
@@ -238,14 +251,35 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 		@Override
 		public E next() {
 			if (!hasNext()) throw new NoSuchElementException("No next element available");
+			if(generationNumber != generationCounter) throw new ConcurrentModificationException("Iterator outdated");
+			/*if (initPhase){
+				Node<E> current = next;
+				initPhase = false;
+				return current.elem;
+			}*/
+			/*Node<E> current = null;
+			if (initPhase){
+				next = first;
+				current = first;
+				initPhase = false;
+			} else {
+				next = next.next;
+				current = next;
+			}*/
+
 			Node<E> current = next;
 			next = next.next;
+			mayRemove = true;
 			return current.elem;
 		}
 
 		@Override
 		public void remove() {
-			throw new UnsupportedOperationException();
+			if (!mayRemove) throw new IllegalStateException("Can't use remove twice or on empty list");
+			if(generationNumber != generationCounter) throw new ConcurrentModificationException("Iterator outdated");
+			DoublyLinkedList.this.remove(next.elem);
+			mayRemove = false;
+			++generationNumber;
 		}
 	}
 
