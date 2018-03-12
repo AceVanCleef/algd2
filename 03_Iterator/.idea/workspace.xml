@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="84d4ea5a-cb0c-4b4b-bde1-231e8bd55d76" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/ch/fhnw/algd2/collections/list/iterator/Abstract_C_ListIterator_RemoveElement.class" afterPath="$PROJECT_DIR$/bin/ch/fhnw/algd2/collections/list/iterator/Abstract_C_ListIterator_RemoveElement.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/ch/fhnw/algd2/collections/list/linkedlist/DoublyLinkedList$MyListIterator.class" afterPath="$PROJECT_DIR$/bin/ch/fhnw/algd2/collections/list/linkedlist/DoublyLinkedList$MyListIterator.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/ch/fhnw/algd2/collections/list/linkedlist/DoublyLinkedList$Node.class" afterPath="$PROJECT_DIR$/bin/ch/fhnw/algd2/collections/list/linkedlist/DoublyLinkedList$Node.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/ch/fhnw/algd2/collections/list/linkedlist/DoublyLinkedList.class" afterPath="$PROJECT_DIR$/bin/ch/fhnw/algd2/collections/list/linkedlist/DoublyLinkedList.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ch/fhnw/algd2/collections/list/linkedlist/DoublyLinkedList.java" afterPath="$PROJECT_DIR$/src/ch/fhnw/algd2/collections/list/linkedlist/DoublyLinkedList.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test-base/ch/fhnw/algd2/collections/list/iterator/Abstract_C_ListIterator_RemoveElement.java" afterPath="$PROJECT_DIR$/test-base/ch/fhnw/algd2/collections/list/iterator/Abstract_C_ListIterator_RemoveElement.java" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -1064,7 +1058,7 @@
       <workItem from="1520537207410" duration="14535000" />
       <workItem from="1520777859233" duration="1711000" />
       <workItem from="1520787833547" duration="1242000" />
-      <workItem from="1520840086037" duration="95000" />
+      <workItem from="1520840086037" duration="718000" />
     </task>
     <task id="LOCAL-00001" summary="B: simple iterator implemented.">
       <created>1520243957384</created>
@@ -1108,7 +1102,14 @@
       <option name="project" value="LOCAL" />
       <updated>1520550200157</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="2.D - working on remove()">
+      <created>1520840203918</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1520840203918</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1144,7 +1145,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="37879000" />
+    <option name="totallyTimeSpent" value="38502000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-11" y="27" width="1942" height="1064" extended-state="6" />
@@ -1196,7 +1197,8 @@
     <MESSAGE value="2.A: adapted code of singlylinkedlist to doublylinkedlist" />
     <MESSAGE value="2.B: implemented simple iteration (hasNext(),, next() )" />
     <MESSAGE value="2.C: implemented generation counter on list and on iterator." />
-    <option name="LAST_COMMIT_MESSAGE" value="2.C: implemented generation counter on list and on iterator." />
+    <MESSAGE value="2.D - working on remove()" />
+    <option name="LAST_COMMIT_MESSAGE" value="2.D - working on remove()" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
