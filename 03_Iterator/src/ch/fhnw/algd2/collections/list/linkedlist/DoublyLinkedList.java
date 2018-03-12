@@ -273,13 +273,29 @@ public class DoublyLinkedList<E> extends MyAbstractList<E> {
 			return current.elem;
 		}
 
+		//Bezüglich "Am Ende der Liste" -> next == null? Prüfe ' next == null && last != null ? previous = last.prev;
 		@Override
 		public void remove() {
 			if (!mayRemove) throw new IllegalStateException("Can't use remove twice or on empty list");
 			if(generationNumber != generationCounter) throw new ConcurrentModificationException("Iterator outdated");
-			DoublyLinkedList.this.remove(next.elem);
+			//DoublyLinkedList.this.remove(next.prev.elem); //widersprüchlich zu Iterator -> .remove() der Liste benutzt lineare Suche.
+			//deletion
+			if (next.prev.elem.equals(first.elem)){
+				first = next;
+				next.prev = null;
+			} else {
+				Node<E> current = next.prev;
+				Node<E> previous = current.prev;
+				previous.next = next;
+				next.prev = previous;
+				current.prev = null;
+				current.next = null;
+			}
+
+			next = next.next;		//Frage: Warum muss grmäss Tests dies gemacht werden.
 			mayRemove = false;
 			++generationNumber;
+			++generationCounter;
 		}
 	}
 
