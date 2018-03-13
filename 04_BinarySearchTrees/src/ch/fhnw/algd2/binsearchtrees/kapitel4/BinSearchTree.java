@@ -110,6 +110,18 @@ public class BinSearchTree {
 	// false sonst.
 	public boolean search(BinSearchTree node, int key) {
 		// TODO Aufgaben 4.3 und 4.5: search (entspricht contains aus Java Collection Framework)
+		System.out.print(node.getKey() + " ");
+		if (node.getLeft() != null && key < node.getKey()) {
+			System.out.print(node.getLeft().getKey() + " went left ");
+			node.search(node.getLeft(), key);
+		} else if (node.getRight() != null && key > node.getKey()) {
+			System.out.print(node.getRight().getKey() + " went right ");
+			node.search(node.getRight(), key);
+		} else if (key == node.getKey()) {
+			System.out.print(node.getKey() + " key found ");
+			return true;
+		}
+		System.out.print(" bottom of fucntion ");
 		return false;
 	}
 
