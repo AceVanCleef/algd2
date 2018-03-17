@@ -24,12 +24,12 @@ public class Aufgabe4_3 {
         System.out.println( "\nAufgabe 4.5\n*****\n" );
         //Aufgabe 4.5: Alle Nodes mit gesuchtem key finden:
         ArrayList<BinSearchTree> bag = new ArrayList<>();
-        bag = root.search(root, 7, bag);
+        int key = 7;
+        root.search(root, key, bag);
+        System.out.println("\nResult of search with key:" + key + ":");
         for (BinSearchTree node : bag) {
-            System.out.print("key: " + node.getKey() + " ");
+            System.out.print(node.getKey() + " ");
         }
-
- 
     }
 
     private static BinSearchTree makeTree() {

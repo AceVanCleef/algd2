@@ -144,22 +144,14 @@ public class BinSearchTree {
 	 * @param bag
 	 * @return
 	 */
-    public ArrayList<BinSearchTree> search(BinSearchTree node, int key, ArrayList<BinSearchTree> bag) {
+    public void search(BinSearchTree node, int key, ArrayList<BinSearchTree> bag) {
         // TODO Aufgaben 4.5: find all elements. (still buggy)
         System.out.print(node.getKey() + " ");
-
-        if (node.getLeft() != null /*&& key < node.getKey()*/) {
-            System.out.print(": went left to " + node.getLeft().getKey());
-            node.search(node.getLeft(), key, bag);
-        } else if (node.getRight() != null /*&& key > node.getKey()*/) {
-            System.out.print(": went right to " + node.getRight().getKey());
-            search(node.getRight(), key, bag);
-        } else if (key == node.getKey()) {
-            System.out.print("[key found: " + node.getKey() + "]");
-            bag.add(node);
-        }
-        //System.out.print(" bottom of fucntion ");
-        return bag;
+		if (node != null){
+			if (node.getLeft() != null) node.search(node.getLeft(), key, bag);
+			if (node.getKey() == key) bag.add(node);
+			if (node.getRight() != null) node.search(node.getRight(), key, bag);
+		}
     }
 
 	/**
@@ -176,7 +168,7 @@ public class BinSearchTree {
 	// Implementieren Sie diese Methode nach den Vorgaben der Aufgabe.
 	// Geben Sie zur Kontrolle den Wert jedes besuchten Knoten aus!
 	public BinSearchTree insert(BinSearchTree node, int key) {
-		// TODO Aufgaben 4.8: insert (entspricht add aus Java Collection Framework)
+		// Done Aufgaben 4.8: insert (entspricht add aus Java Collection Framework)
 		if (node == null){
 			return new BinSearchTree(key);
 		}
