@@ -113,7 +113,7 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 			nodeCount++;
 			return new Node<K, E>(key, element);
 		} else {
-			int c = key.compareTo(p.key);
+			int c = key.compareTo(p.key);	//-1, 0 or 1 as return values of compareTo.
 			if (c < 0) p.left = insert(p.left, key, element);
 			else if (c > 0) p.right = insert(p.right, key, element);
 			else p.element = element;
@@ -136,7 +136,20 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 	@Override
 	public String toString() {
 		// TODO implement method toString here
-		return "TO BE IMPLEMENTED";
+
+		return toStringInOrder(root);
+	}
+
+	private String toStringInOrder(Node<K, E> node) {
+		if (node == null) {
+			return "";
+		}
+		String s = "[";
+		if (node.getLeft() != null) s = s + toStringInOrder(node.left);
+		s = s + node.key;
+		if (node.getLeft() != null) s = s + toStringInOrder(node.right);
+		s = s + "]";
+		return s;
 	}
 
 	private static class Node<K extends Comparable<? super K>, E> implements
