@@ -129,30 +129,15 @@ public class BinSearchTree {
 		return isFound;
 	}
 
-	/**
-	 * potential soolution
-	 *
-	 * 	private void inorderTraversal(BinSearchTree root, List<Integer> l) {
-	 if (root != null) {
-	 inorderTraversal(root.getLeft(), l);
-	 l.add(root.getKey());
-	 inorderTraversal(root.getRight(), l);
-	 }
-	 }
-	 * @param node
-	 * @param key
-	 * @param bag
-	 * @return
-	 */
+	//Question: Why no if(node != null) check at the beginning of the function budy? Why is this
+	// cond. it always true?
     public void search(BinSearchTree node, int key, ArrayList<BinSearchTree> bag) {
         // TODO Aufgaben 4.5: find all elements. (still buggy)
         System.out.print(node.getKey() + " ");
-		if (node != null){
-			if (node.getLeft() != null) node.search(node.getLeft(), key, bag);
-			if (node.getKey() == key) bag.add(node);
-			if (node.getRight() != null) node.search(node.getRight(), key, bag);
-		}
-    }
+		if (node.getLeft() != null) node.search(node.getLeft(), key, bag);
+		if (node.getKey() == key) bag.add(node);
+		if (node.getRight() != null) node.search(node.getRight(), key, bag);
+	}
 
 	/**
 	 * Diese Methode fügt einen neuen Knoten mit dem Schlüssel key in den binären
