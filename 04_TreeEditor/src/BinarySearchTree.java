@@ -131,12 +131,29 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 	@Override
 	public void remove(K key) {
 		// TODO implement method remove here
+		remove(root, key);
+	}
+
+	/**
+	 *  Case 1 (leaf): left == null && right == null
+	 *  Case 2 (inner node, grade = 1):
+	 *  		left == null ^ right == null
+	 *  Case 3 (inner node, grade = 2):
+	 *  		!( left == null && right == null)
+	 *  		or
+	 *  		left != null && right != null
+	 * @param node
+	 * @param key
+	 * @return
+	 */
+	private Node<K, E> remove(Node<K, E> node, E key) {
+
+		return node;
 	}
 
 	@Override
 	public String toString() {
-		// TODO implement method toString here
-
+		// Done implement method toString here
 		return toStringInOrder(root);
 	}
 
