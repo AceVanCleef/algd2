@@ -1,5 +1,8 @@
 package ch.fhnw.algd2.binsearchtrees.kapitel4;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * ETH Zürich; Leitprogramm; Binäre Suchbäume -----
  * Das ist die Klasse eines
@@ -113,18 +116,51 @@ public class BinSearchTree {
 		System.out.print(node.getKey() + " ");
 		boolean isFound = false;
 		if (node.getLeft() != null && key < node.getKey()) {
-			System.out.print(": went left to " + node.getLeft().getKey());
+			//System.out.print(": went left to " + node.getLeft().getKey());
 			isFound = node.search(node.getLeft(), key);
 		} else if (node.getRight() != null && key > node.getKey()) {
-			System.out.print(": went right to " + node.getRight().getKey());
+			//System.out.print(": went right to " + node.getRight().getKey());
 			isFound = search(node.getRight(), key);
 		} else if (key == node.getKey()) {
-			System.out.print("[key found: " + node.getKey() + "]");
+			//System.out.print("[key found: " + node.getKey() + "]");
 			return true;
 		}
-		System.out.print(" bottom of fucntion ");
+		//System.out.print(" bottom of fucntion ");
 		return isFound;
 	}
+
+	/**
+	 * potential soolution
+	 *
+	 * 	private void inorderTraversal(BinSearchTree root, List<Integer> l) {
+	 if (root != null) {
+	 inorderTraversal(root.getLeft(), l);
+	 l.add(root.getKey());
+	 inorderTraversal(root.getRight(), l);
+	 }
+	 }
+	 * @param node
+	 * @param key
+	 * @param bag
+	 * @return
+	 */
+    public ArrayList<BinSearchTree> search(BinSearchTree node, int key, ArrayList<BinSearchTree> bag) {
+        // TODO Aufgaben 4.5: find all elements. (still buggy)
+        System.out.print(node.getKey() + " ");
+
+        if (node.getLeft() != null /*&& key < node.getKey()*/) {
+            System.out.print(": went left to " + node.getLeft().getKey());
+            node.search(node.getLeft(), key, bag);
+        } else if (node.getRight() != null /*&& key > node.getKey()*/) {
+            System.out.print(": went right to " + node.getRight().getKey());
+            search(node.getRight(), key, bag);
+        } else if (key == node.getKey()) {
+            System.out.print("[key found: " + node.getKey() + "]");
+            bag.add(node);
+        }
+        //System.out.print(" bottom of fucntion ");
+        return bag;
+    }
 
 	/**
 	 * Diese Methode fügt einen neuen Knoten mit dem Schlüssel key in den binären
@@ -141,6 +177,15 @@ public class BinSearchTree {
 	// Geben Sie zur Kontrolle den Wert jedes besuchten Knoten aus!
 	public BinSearchTree insert(BinSearchTree node, int key) {
 		// TODO Aufgaben 4.8: insert (entspricht add aus Java Collection Framework)
+		if (node == null){
+			return new BinSearchTree(key);
+		}
+		System.out.print(node.getKey());
+		if (key < node.getKey()) {
+			node.setLeft( node.insert( node.getLeft(), key) );
+		} else {
+			node.setRight( node.insert( node.getRight(), key) );
+		}
 		return node;
 	}
 

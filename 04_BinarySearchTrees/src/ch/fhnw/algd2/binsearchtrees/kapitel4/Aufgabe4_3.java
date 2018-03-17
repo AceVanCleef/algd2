@@ -1,5 +1,7 @@
 package ch.fhnw.algd2.binsearchtrees.kapitel4;
 
+import java.util.ArrayList;
+
 /**
  * ETH Zürich, Leitprogramm, Binäre Suchbäume ----
  * In dieser Klasse wird ein Binärbaum erzeugt und die Methode preorderPrint()
@@ -18,6 +20,15 @@ public class Aufgabe4_3 {
         System.out.println("Suche nach 27 (nicht vorhanden) ergibt: "+ root.search(root,27));
         System.out.println("Suche nach 4 (vorhanden) ergibt: "+ root.search(root,4));
         System.out.println("Suche nach 7 (2-mal vorhanden) ergibt: "+ root.search(root,7));
+
+        System.out.println( "\nAufgabe 4.5\n*****\n" );
+        //Aufgabe 4.5: Alle Nodes mit gesuchtem key finden:
+        ArrayList<BinSearchTree> bag = new ArrayList<>();
+        bag = root.search(root, 7, bag);
+        for (BinSearchTree node : bag) {
+            System.out.print("key: " + node.getKey() + " ");
+        }
+
  
     }
 

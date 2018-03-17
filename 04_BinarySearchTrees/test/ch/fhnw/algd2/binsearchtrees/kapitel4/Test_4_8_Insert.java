@@ -33,9 +33,12 @@ public class Test_4_8_Insert {
 		}
 	}
 
+	/**
+	 * enforces .insert() to use the constructor if node parameter == null.
+	 */
 	@Test
 	public void insertIntoEmptyTree() {
-		BinSearchTree root = new BinSearchTree(0).insert(null, 6);
+		BinSearchTree root = new BinSearchTree(0).insert(null, 6); //overrides first constructor call.
 		assertArrayEquals("inorder traversal of generated tree is not correct",
 				new int[] { 6 }, inorderTraversal(root));
 	}
