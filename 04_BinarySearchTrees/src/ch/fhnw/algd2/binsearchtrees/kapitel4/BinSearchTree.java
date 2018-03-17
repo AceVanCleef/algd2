@@ -157,7 +157,7 @@ public class BinSearchTree {
 		if (node == null){
 			return new BinSearchTree(key);
 		}
-		System.out.print(node.getKey());
+		System.out.print(node.getKey() + " ");
 		if (key < node.getKey()) {
 			node.setLeft( node.insert( node.getLeft(), key) );
 		} else {
