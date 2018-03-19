@@ -146,10 +146,14 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 	 * @param key
 	 * @return
 	 */
-	private Node<K, E> remove(Node<K, E> node, E key) {
+	private Node<K, E> remove(Node<K, E> node, K key) {
+		//find node
 
-		return node;
+		//delete according to node type.
+		return null;
 	}
+
+
 
 	@Override
 	public String toString() {
@@ -158,13 +162,14 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 	}
 
 	private String toStringInOrder(Node<K, E> node) {
-		if (node == null) {
+		if (node == null) {	//prevents NullPointer for left == null AND right == null.
 			return "";
 		}
 		String s = "[";
-		if (node.getLeft() != null) s = s + toStringInOrder(node.left);
+		//no navigational checks needed (key < getKey oder key >= getKey).
+		s = s + toStringInOrder(node.left);
 		s = s + node.key;
-		if (node.getLeft() != null) s = s + toStringInOrder(node.right);
+		s = s + toStringInOrder(node.right);
 		s = s + "]";
 		return s;
 	}
@@ -220,6 +225,21 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 		@Override
 		public Tree.Node<K, E> getRight() {
 			return right;
+		}
+
+		//#remove()
+		public boolean isLeafNode(){
+			return left == null && right == null;
+		}
+
+		//#remove()
+		public boolean isInnerNodeOfGrade1(){
+			return left == null ^ right == null;
+		}
+
+		//#remove()
+		public boolean isInnerNodeOfGrade2(){
+			return left != null && right != null;
 		}
 	}
 }

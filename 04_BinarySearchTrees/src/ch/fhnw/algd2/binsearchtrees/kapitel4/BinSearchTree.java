@@ -132,11 +132,12 @@ public class BinSearchTree {
 	//Question: Why no if(node != null) check at the beginning of the function budy? Why is this
 	// cond. it always true?
     public void search(BinSearchTree node, int key, ArrayList<BinSearchTree> bag) {
-        // TODO Aufgaben 4.5: find all elements. (still buggy)
-        System.out.print(node.getKey() + " ");
-		if (node.getLeft() != null) node.search(node.getLeft(), key, bag);
+        // TODO Aufgaben 4.5: find all elements.
+        if (node == null) return;
+		System.out.print(node.getKey() + " ");
+		if (key < node.getKey()) node.search(node.getLeft(), key, bag);
 		if (node.getKey() == key) bag.add(node);
-		if (node.getRight() != null) node.search(node.getRight(), key, bag);
+		if (key >= node.getKey()) node.search(node.getRight(), key, bag);
 	}
 
 	/**
