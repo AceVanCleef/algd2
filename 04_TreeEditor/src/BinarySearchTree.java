@@ -134,6 +134,12 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 		remove(root, key);
 	}
 
+	/*
+	* int c = key.compareTo(p.key);
+			if (c == 0) return p.element;
+			else if (c < 0) return search(p.left, key);
+			else return search(p.right, key);
+	* */
 	/**
 	 *  Case 1 (leaf): left == null && right == null
 	 *  Case 2 (inner node, grade = 1):
@@ -147,10 +153,30 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 	 * @return
 	 */
 	private Node<K, E> remove(Node<K, E> node, K key) {
-		//find node
-
-		//delete according to node type.
-		return null;
+		if (node != null) {
+			int c = key.compareTo(node.key);
+			if (c < 0) node.left = remove(node.left, key);
+			else if (c > 0) node.right = remove(node.right, key);
+			else if (node.getRight() == null) node = node.left;
+			else {
+				if (node.getLeft() == null) node = node.right;
+				else {
+					Node<K, E> n = node.right, p = null;
+					while (n.getLeft() != null) {
+						p = n;
+						n = n.left;
+					}
+					if (p != null) {
+						p.left = n.right;
+						n.left = node.left;
+						n.right = node.right;
+					} else n.left = node.left;
+					node = n;
+				}
+				remove(node, key);
+			}
+		}
+		return node;
 	}
 
 

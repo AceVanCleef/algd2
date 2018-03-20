@@ -112,7 +112,9 @@ public class BinSearchTree {
 	// Geben Sie true zurück, wenn der Wert gefunden wurde,
 	// false sonst.
 	public boolean search(BinSearchTree node, int key) {
-		// TODO Aufgaben 4.3 und 4.5: search (entspricht contains aus Java Collection Framework)
+		// Done Aufgaben 4.3 und 4.5: search (entspricht contains aus Java Collection Framework)
+
+		//Todo: remove unnecessary null checks (introduce "node == null) return ?
 		System.out.print(node.getKey() + " ");
 		boolean isFound = false;
 		if (node.getLeft() != null && key < node.getKey()) {
@@ -183,6 +185,28 @@ public class BinSearchTree {
 	// Leitprogramms auf
 	public BinSearchTree delete(BinSearchTree node, int key) {
 		// TODO Aufgaben 4.13: delete (entspricht remove aus Java Collection Framework)
+		if (node != null) {
+			if (key < node.getKey()) node.setLeft(delete(node.getLeft(), key));
+			else if (key > node.getKey()) node.setRight(delete(node.getRight(), key));
+			else if (node.getRight() == null) node = node.getLeft();
+			else {
+				if (node.getLeft() == null) node = node.getRight();
+				else {
+					BinSearchTree n = node.getRight(), p = null;
+					while (n.getLeft() != null) {
+						p = n;
+						n = n.getLeft();
+					}
+					if (p != null) {
+						p.setLeft(n.getRight());
+						n.setLeft(node.getLeft());
+						n.setRight(node.getRight());
+					} else n.setLeft(node.getLeft());
+					node = n;
+				}
+				delete(node, key);
+			}
+		}
 		return node;
 	}
 }
