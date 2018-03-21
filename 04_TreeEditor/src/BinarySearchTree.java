@@ -111,12 +111,15 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 	private Node<K, E> insert(Node<K, E> p, K key, E element) {
 		if (p == null) {
 			nodeCount++;
-			return new Node<K, E>(key, element);
+			return new Node<>(key, element);
 		} else {
 			int c = key.compareTo(p.key);	//-1, 0 or 1 as return values of compareTo.
 			if (c < 0) p.left = insert(p.left, key, element);
 			else if (c > 0) p.right = insert(p.right, key, element);
 			else p.element = element;
+			if (!isBalanced(p)) {
+				System.out.println(isBalanced(p) + "\n ");
+			}
 			return p;
 		}
 	}
@@ -130,7 +133,7 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 	 */
 	@Override
 	public void remove(K key) {
-		// TODO implement method remove here
+		// Done implement method remove here
 		remove(root, key);
 	}
 
@@ -180,7 +183,6 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 	}
 
 
-
 	@Override
 	public String toString() {
 		// Done implement method toString here
@@ -198,6 +200,55 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 		s = s + toStringInOrder(node.right);
 		s = s + "]";
 		return s;
+	}
+
+	//#AVL - Trees
+	private Node<K, E> rotateR(Node<K, E> n) {
+		// 1. künftige Wurzel zwischenmerken
+		Node<K,E> n1 = n.left;
+		//2. Überläufer behandeln (auf n.left umhängen, altes n1.right = null setzen):
+		n.left = n1.right;
+		n1.right = null;	//kann auch weggelassen werden.
+		//3. n zum Kind von n1 machen.
+		n1.right = n;
+		return n1;
+	}
+
+	//#AVL - Trees
+	private Node<K, E> rotateL(Node<K, E> n) {
+		// 1. künftige Wurzel zwischenmerken
+		Node<K,E> n1 = n.right;
+		//2. Überläufer behandeln (auf n.right umhängen, altes n1.left = null setzen):
+		n.right = n1.left;
+		n1.left = null;	//kann auch weggelassen werden.
+		//3. n zum Kind von n1 machen.
+		n1.left = n;
+		return n1;
+	}
+
+	private Node<K, E> rotateRL(Node<K, E> n) {
+		rotateR(n.left);
+		Node<K, E> newRoot = rotateL(n);
+		return newRoot;
+	}
+
+	private Node<K, E> rotateLR(Node<K, E> n) {
+		rotateL(n.left);
+		Node<K, E> newRoot = rotateR(n);
+		return newRoot;
+	}
+
+	//#AVL - Trees
+
+	/**
+	 * returns whether the (sub) tree is balanced.
+	 * @param n
+	 * @return boolean whether the balance is within the interval of [-1,1]
+	 */
+	private boolean isBalanced(Node<K,E> n) {
+		int balance = height(n.right) - height(n.left);
+		System.out.println("Balance of " + n.key + " is: " + balance);
+		return -2 < balance && balance < 2;	//Balance must be in intervall of [-1,1]
 	}
 
 	private static class Node<K extends Comparable<? super K>, E> implements
