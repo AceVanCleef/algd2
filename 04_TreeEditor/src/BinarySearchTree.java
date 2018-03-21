@@ -202,7 +202,8 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 		return s;
 	}
 
-	//#AVL - Trees
+	/*********************************** # AVL - Trees  ***************************************/
+
 	private Node<K, E> rotateR(Node<K, E> n) {
 		// 1. künftige Wurzel zwischenmerken
 		Node<K,E> n1 = n.left;
@@ -214,7 +215,6 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 		return n1;
 	}
 
-	//#AVL - Trees
 	private Node<K, E> rotateL(Node<K, E> n) {
 		// 1. künftige Wurzel zwischenmerken
 		Node<K,E> n1 = n.right;
@@ -227,18 +227,14 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 	}
 
 	private Node<K, E> rotateRL(Node<K, E> n) {
-		rotateR(n.left);
-		Node<K, E> newRoot = rotateL(n);
-		return newRoot;
+		rotateR(n.right);
+		return rotateL(n);
 	}
 
 	private Node<K, E> rotateLR(Node<K, E> n) {
 		rotateL(n.left);
-		Node<K, E> newRoot = rotateR(n);
-		return newRoot;
+		return rotateR(n);
 	}
-
-	//#AVL - Trees
 
 	/**
 	 * returns whether the (sub) tree is balanced.
@@ -250,6 +246,9 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 		System.out.println("Balance of " + n.key + " is: " + balance);
 		return -2 < balance && balance < 2;	//Balance must be in intervall of [-1,1]
 	}
+
+	/*********************************** End of # AVL - Trees  ***************************************/
+
 
 	private static class Node<K extends Comparable<? super K>, E> implements
 			Tree.Node<K, E> {
