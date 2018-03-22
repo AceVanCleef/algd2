@@ -119,6 +119,24 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 			else p.element = element;
 			if (!isBalanced(p)) {
 				System.out.println(isBalanced(p) + "\n ");
+				int balance = height(p.right) - height(p.left);
+				if (balance < 0) {
+					//balance is negativ
+					Node<K,E> child = p.left;
+					if(height(child.right) - height(child.left) > 0){	//e.g. p: -2, p.left: 1
+						p = rotateLR(p);
+					} else {
+						p = rotateR(p);
+					}
+				} else {
+					//balance > 0
+					Node<K,E> child = p.right;
+					if(height(child.right) - height(child.left) < 0){ //e.g. p: 2, p.right: -1
+						p = rotateRL(p);
+					} else {
+						p = rotateL(p);
+					}
+				}
 			}
 			return p;
 		}
@@ -227,12 +245,12 @@ class BinarySearchTree<K extends Comparable<? super K>, E> implements
 	}
 
 	private Node<K, E> rotateRL(Node<K, E> n) {
-		rotateR(n.right);
+		n.right = rotateR(n.right);
 		return rotateL(n);
 	}
 
 	private Node<K, E> rotateLR(Node<K, E> n) {
-		rotateL(n.left);
+		n.left = rotateL(n.left);
 		return rotateR(n);
 	}
 
