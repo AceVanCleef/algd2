@@ -22,20 +22,30 @@ public class UnsortedSet<E> extends AbstractArrayCollection<E> implements
 
 	@Override
 	public boolean add(E e) {
+		//Bag: O(1). Set: O(n).
 		if (e == null) throw new NullPointerException("null not supported.");
 		//#Difference-to-bag:
-		if (contains(e)) return false;
+		if (contains(e)) return false;	// O(n)!
 		if (size < capacity){
-			data[size++] = e;
+			data[size++] = e;			// O(1).
 			return true;
 		} else {
-			throw new IllegalStateException();
+			throw new IllegalStateException("Collection is full");
 		}
 	}
 
 	@Override
 	public boolean remove(Object o) {
-		System.out.println(Arrays.toString(data) + " before");
+		int i = indexOf(o);				// search: O(n).
+		//contains:
+		if (i < 0) return false;
+		else {
+			data[i] = data[size - 1];	//[][][i][][][last]: last goes to [i]. remove: O(1)!
+			data[size - 1] = null;
+			size--;
+			return true;
+		}
+		/*System.out.println(Arrays.toString(data) + " before");
 
 		if (contains(o)){
 			int i = 0;
@@ -55,15 +65,22 @@ public class UnsortedSet<E> extends AbstractArrayCollection<E> implements
 
 			return true;
 		}
-		return false;
+		return false;*/
 	}
 
 	@Override
 	public boolean contains(Object o) {
-		for (int i = 0; i < size; i++){
-			if (data[i].equals(o)) return true;
+		return indexOf(o) >= 0;	// linear search: O(n).
+	}
+
+	private int indexOf(Object o) {
+		if (o == null) throw new NullPointerException();
+		int i = size - 1;
+		//backwards linear search: O(n).
+		while (i >= 0 && !data[i].equals(o)) {
+			i--;
 		}
-		return false;
+		return i;
 	}
 
 	@Override
