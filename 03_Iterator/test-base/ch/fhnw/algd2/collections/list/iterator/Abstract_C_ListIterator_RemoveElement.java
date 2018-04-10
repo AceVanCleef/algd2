@@ -188,7 +188,7 @@ public abstract class Abstract_C_ListIterator_RemoveElement extends
 		assertSame(expectToBeRemoved, willBeRemoved);
 		Integer nextInList = null;
 		it.remove();
-		for (i = i + 1; i < allNumbers.length; i++) {
+		for (i = i + 1; i <= allNumbers.length; i++) { //changed < to <=
 			assertTrue(it.hasNext());
 			nextInList = it.next();
 		}

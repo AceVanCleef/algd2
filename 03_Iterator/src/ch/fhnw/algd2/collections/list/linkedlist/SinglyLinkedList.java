@@ -16,7 +16,7 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 	private Node<E> last;
 
 	//#Concurrent Modification (Iterator)
-	private int generationCounter = 0;
+	private int modCount = 0;
 
 	@Override
 	public boolean add(E e) {
@@ -29,7 +29,7 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 		}
 		last = n;
 		++size;
-		++generationCounter;
+		++modCount;
 		return true;
 	}
 
@@ -63,7 +63,7 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 		}
 
 		--size;
-		++generationCounter;
+		++modCount;
 		return true;
 	}
 
@@ -95,14 +95,14 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 			first = new Node<>(element);
 			last = first;
 			++size;
-			++generationCounter;
+			++modCount;
 			return;
 		}
 		else if (index == size) {			//case: adding as last currentElement
 			last.next = new Node<>(element);
 			last = last.next;
 			++size;
-			++generationCounter;
+			++modCount;
 			return;
 		}
 		//moving through the list
@@ -124,7 +124,7 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 			last = current;
 		}
 		++size;
-		++generationCounter;
+		++modCount;
 	}
 
 	//deletion: [A]->[B]->[C]-| ; [A]->[C]
@@ -137,7 +137,7 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 			Node<E> oldFirst = first;
 			first = first.next;
 			--size;
-			++generationCounter;
+			++modCount;
 			return oldFirst.elem;
 		}
 		//moving through the list
@@ -156,7 +156,7 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 			last = previous; //last.next will be null because of 'previous.next == null';
 		}
 		--size;
-		++generationCounter;
+		++modCount;
 		return current.elem;
 	}
 
@@ -200,47 +200,52 @@ public class SinglyLinkedList<E> extends MyAbstractList<E> {
 	private class MyIterator implements Iterator<E> {
 
 		//#Concurrent Modification
-		private int generationNumber = generationCounter;
+		private int expectedModCount = modCount;
 
 		//Access to data structure (the list)
 		private Node<E> next = first; //Note: MyIterator sees members of outer class.
-		E currentElement;
-		private boolean mayRemove = false;
-		private boolean alreadyMoved = false;
+		private Node<E> previous = null, previousPrevious = null;
 
 		@Override
-		public boolean hasNext() {
-			return next != null;		//Frage: next oder next.next?
-		}
+		public boolean hasNext() {	return next != null;	}
 
 		@Override
 		public E next() {
-			//Todo: trying to fix jumping issue after using .remove()
-			/*if (alreadyMoved){
-				alreadyMoved = false;
-				return currentElement;
-			}*/
-			if(next == null) throw new NoSuchElementException("No next currentElement available");
-			if(generationNumber != generationCounter) throw new ConcurrentModificationException("Iterator outdated");
-			currentElement = next.elem;
+			//Ensure has next
+			if (!hasNext())	throw new NoSuchElementException("next == null");
+
+			//Check Modification
+			if(expectedModCount != modCount) throw new ConcurrentModificationException("Iterator outdated");
+
+			//element removed
+			if (previous != null){
+				previousPrevious = previous;
+			}
+			previous = next;
 			next = next.next;
-			mayRemove = true;
-			return currentElement;
+			return previous.elem;
 		}
 
 		@Override
 		public void remove() {
-			if(generationNumber != generationCounter) throw new ConcurrentModificationException("Iterator outdated");
-			if (currentElement == null) throw new IllegalStateException("Before First Next Call not allowed");
-			if (!mayRemove) throw new IllegalStateException("removed has already been called once without .next() in-between.");
-			SinglyLinkedList.this.remove(currentElement);
-			if (next != null){		//prevents NullPointerExc at last element.
-				currentElement = next.elem;
-				next = next.next;
-				//alreadyMoved = true;
+			// can not remove
+			if (previous == null) 	throw new IllegalStateException("Can't remove yet. next() needed.");
+			previous.next = null;
+
+			//remove first element
+			if (previousPrevious == null) {
+				first = next;
+			} else {
+				previousPrevious.next = next; //umbiegen auf next.
 			}
-			mayRemove = false;
-			++generationNumber;
+
+			// check if tail is removed
+			if (previous == last ) last = previousPrevious;
+
+			previous = null;	//zu löschendes Element
+			++modCount;
+			--size;
+			++expectedModCount;
 		}
 	}
 
