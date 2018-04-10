@@ -25,7 +25,7 @@ public class UnsortedBag<E> extends AbstractArrayCollection<E> {
 			data[size++] = e;
 			return true;
 		} else {
-			throw new IllegalStateException();
+			throw new IllegalStateException("Collection is full");
 		}
 
 	}

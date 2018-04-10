@@ -31,7 +31,7 @@ public class SortedSet<E extends Comparable<? super E>> extends
 			Arrays.sort(data, 0, size); //Dual-pivot quick sort O(n*log(n))
 			return true;
 		} else {
-			throw new IllegalStateException();
+			throw new IllegalStateException("Collection is full");
 		}
 	}
 
