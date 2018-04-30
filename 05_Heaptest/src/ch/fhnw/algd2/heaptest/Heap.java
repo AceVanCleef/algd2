@@ -1,5 +1,6 @@
 package ch.fhnw.algd2.heaptest;
 /* Heap als Implementierung einer Priority Queue */
+@SuppressWarnings("LossyEncoding")
 class Heap<K> implements PriorityQueue<K> {
 	private HeapNode<K>[] heap; // Array to store the heap elements
 	private int size; // position of last insertion into the heap
@@ -13,6 +14,8 @@ class Heap<K> implements PriorityQueue<K> {
 	@SuppressWarnings("unchecked")
 	Heap(int capacity) {
 		// TODO allocate array of proper size and assign to heap
+		heap = new HeapNode[capacity];
+		size = 0;
 	}
 
 	/**
@@ -23,7 +26,7 @@ class Heap<K> implements PriorityQueue<K> {
 	@Override
 	public int size() {
 		// TODO return number of elements currently contained in the heap
-		return 0;
+		return size;
 	}
 
 	/**
@@ -34,7 +37,7 @@ class Heap<K> implements PriorityQueue<K> {
 	@Override
 	public boolean isEmpty() {
 		// TODO return true if no element is in the heap
-		return false;
+		return size == 0;
 	}
 
 	/**
@@ -45,7 +48,7 @@ class Heap<K> implements PriorityQueue<K> {
 	@Override
 	public boolean isFull() {
 		// TODO return true if no further element can be inserted to the heap
-		return false;
+		return size == heap.length;
 	}
 
 	/**
@@ -54,6 +57,8 @@ class Heap<K> implements PriorityQueue<K> {
 	@Override
 	public void clear() {
 		// TODO clear the heap from all elements
+		heap = new HeapNode[ heap.length ];
+		size = 0;
 	}
 
 	/**
@@ -71,6 +76,7 @@ class Heap<K> implements PriorityQueue<K> {
 	@Override
 	public void add(K element, long priority) throws QueueFullException {
 		// TODO add the item element with the priority priority to the heap
+		
 	}
 
 	/**
@@ -109,12 +115,12 @@ class Heap<K> implements PriorityQueue<K> {
 	}
 
 	/**
-	 * Erzeugt ein neues long[] Array und kopiert die Werte der Prioritäten aus
-	 * dem Heaparray dort hinein. Die Grösse des zurückgegebenen Arrays soll der
+	 * Erzeugt ein neues long[] Array und kopiert die Werte der Prioritï¿½ten aus
+	 * dem Heaparray dort hinein. Die Grï¿½sse des zurï¿½ckgegebenen Arrays soll der
 	 * Anzahl Elemente in der Queue entsprechen (= size()). An der Position 0 soll
-	 * die kleinste Priorität (= Priorität des Wurzelelementes) stehen.
+	 * die kleinste Prioritï¿½t (= Prioritï¿½t des Wurzelelementes) stehen.
 	 * 
-	 * @return Array mit allen Prioritäten
+	 * @return Array mit allen Prioritï¿½ten
 	 */
 	@Override
 	public long[] toLongArray() {
