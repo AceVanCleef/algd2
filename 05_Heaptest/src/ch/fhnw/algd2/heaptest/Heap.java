@@ -76,9 +76,16 @@ class Heap<K> implements PriorityQueue<K> {
 	@Override
 	public void add(K element, long priority) throws QueueFullException {
 		// TODO add the item element with the priority priority to the heap
+		//Note: "Duplicates and null values are allowed" means
+		// I don't have to do anything about it. No exception has to be thrown.
 		if (isFull()) throw new QueueFullException();
-		heap[size] = new HeapNode<>(element, priority);
+		//add element.
+		int index = size;
+		heap[index] = new HeapNode<>(element, priority);
 		++size;
+		// check: has the newly added node to move up? Note, that siftUp does half of the check.
+		if ( size > 1)
+			siftUp(index);
 	}
 
 	/**
@@ -114,6 +121,18 @@ class Heap<K> implements PriorityQueue<K> {
 	 */
 	private void siftUp(int start) {
 		// TODO implement sift up for element at start
+		int predecessor = indexOfParent(start);
+		int child = start;
+		HeapNode<K> swapCache;
+		while (heap[ child ].priority < heap[ predecessor ].priority) {
+			//swap nodes.
+			swapCache = heap[ predecessor ];
+			heap[ predecessor ] = heap[ child ];
+			heap[ child ] = swapCache;
+			//update indices.
+			child = predecessor;
+			predecessor = indexOfParent(child);
+		}
 	}
 
 	/**
