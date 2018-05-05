@@ -100,7 +100,14 @@ class Heap<K> implements PriorityQueue<K> {
 	public K removeMin() throws QueueEmptyException {
 		// TODO return the element from the heap's root and remove the element from
 		// the heap
-		return null;
+		HeapNode<K> root = heap[0];
+		//delete root and replace it with last element.
+		if (size > 1)
+			heap[0] = heap[ size - 1 ];
+		heap[ size - 1] = null;
+		--size;
+		//siftDown(0);	//all checks are held within siftDown().
+		return root.element;
 	}
 
 	/**
@@ -111,6 +118,30 @@ class Heap<K> implements PriorityQueue<K> {
 	 */
 	private void siftDown(int start) {
 		// TODO implement sift down for element at start
+		int leftChild = indexOfLeftChild(start);
+		int rightChild = indexOfRightChild(start);
+		int parent = start;
+		HeapNode<K> swapCache;
+		while (heap[ parent ].priority > heap[ leftChild ].priority ||
+				heap[ parent ].priority > heap[ rightChild ].priority) {
+			//decide to swap with which child
+			int swapWith;
+			if (heap[ leftChild ].priority < heap[ rightChild ].priority) {
+				//swap with left child
+				swapWith = leftChild;
+			} else {
+				//swap with right child
+				swapWith = rightChild;
+			}
+			//swap.
+			swapCache = heap[ swapWith ];
+			heap[ swapWith ] = heap[ parent ];
+			heap[ parent ] = swapCache;
+			//update indices.
+			parent = swapWith;
+			leftChild = indexOfLeftChild(start);
+			rightChild = indexOfRightChild(start);
+		}
 	}
 
 	/**
