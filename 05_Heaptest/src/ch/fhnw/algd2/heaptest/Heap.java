@@ -2,7 +2,7 @@ package ch.fhnw.algd2.heaptest;
 /* Heap als Implementierung einer Priority Queue */
 @SuppressWarnings("LossyEncoding")
 class Heap<K> implements PriorityQueue<K> {
-	private HeapNode<K>[] heap; // Array to store the heap elements
+	private HeapNode<K>[] heap; // Array to store the heap elements. 0-indiziert.
 	private int size; // position of last insertion into the heap
 
 	/**
@@ -76,7 +76,9 @@ class Heap<K> implements PriorityQueue<K> {
 	@Override
 	public void add(K element, long priority) throws QueueFullException {
 		// TODO add the item element with the priority priority to the heap
-		
+		if (isFull()) throw new QueueFullException();
+		heap[size] = new HeapNode<>(element, priority);
+		++size;
 	}
 
 	/**
@@ -115,6 +117,33 @@ class Heap<K> implements PriorityQueue<K> {
 	}
 
 	/**
+	 * returns index of the parent node's left child.
+	 * @param i index of parent node.
+	 * @return position of left child node within 0-indexed array.
+	 */
+	private int indexOfLeftChild(int i) {
+		return 2*i + 1; //note: 4,5 becomes 4 due to integer math.
+	}
+
+	/**
+	 * returns index of the parent node's right child.
+	 * @param i index of parent node.
+	 * @return position of right child node within 0-indexed array.
+	 */
+	private int indexOfRightChild(int i) {
+		return 2*i + 2; //note: 4,5 becomes 4 due to integer math.
+	}
+
+	/**
+	 * returns index of the parent node.
+	 * @param i index of child node.
+	 * @return position of parent node within 0-indexed array.
+	 */
+	private int indexOfParent(int i) {
+		return (i - 1) / 2; //note: 4,5 becomes 4 due to integer math.
+	}
+
+	/**
 	 * Erzeugt ein neues long[] Array und kopiert die Werte der Priorit�ten aus
 	 * dem Heaparray dort hinein. Die Gr�sse des zur�ckgegebenen Arrays soll der
 	 * Anzahl Elemente in der Queue entsprechen (= size()). An der Position 0 soll
@@ -126,7 +155,11 @@ class Heap<K> implements PriorityQueue<K> {
 	public long[] toLongArray() {
 		// TODO return array with all the priorities currently in the heap. Use
 		// order of storage. Put root element at position 0.
-		return null;
+		long[] prioArray = new long[size];
+		for (int i = 0; i < prioArray.length; ++i) {
+			prioArray[i] = heap[i].priority;
+		}
+		return prioArray;
 	}
 
 	private static class HeapNode<K> {
