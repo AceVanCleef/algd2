@@ -106,7 +106,7 @@ class Heap<K> implements PriorityQueue<K> {
 			heap[0] = heap[ size - 1 ];
 		heap[ size - 1] = null;
 		--size;
-		//siftDown(0);	//all checks are held within siftDown().
+		siftDown(0);	//all checks are held within siftDown().
 		return root.element;
 	}
 
@@ -118,21 +118,32 @@ class Heap<K> implements PriorityQueue<K> {
 	 */
 	private void siftDown(int start) {
 		// TODO implement sift down for element at start
+
+		//TODO make sure that this implementation also works when the tree has three generations.
 		int leftChild = indexOfLeftChild(start);
 		int rightChild = indexOfRightChild(start);
 		int parent = start;
 		HeapNode<K> swapCache;
-		while (heap[ parent ].priority > heap[ leftChild ].priority ||
-				heap[ parent ].priority > heap[ rightChild ].priority) {
-			//decide to swap with which child
+		while (heap[ leftChild ] != null && heap[ parent ].priority > heap[ leftChild ].priority ||
+				heap[ rightChild ] != null && heap[ parent ].priority > heap[ rightChild ].priority) {
+			//decide to swap with which child. Note: Remember that
+			// sometimes, there might be less than 2 children.
 			int swapWith;
-			if (heap[ leftChild ].priority < heap[ rightChild ].priority) {
-				//swap with left child
+			if (heap[ leftChild ] != null && heap[ rightChild ] != null) {
+				if (heap[ leftChild ].priority < heap[ rightChild ].priority) {
+					swapWith = leftChild;
+				} else {
+					swapWith = rightChild;
+				}
+			} else if (heap[ leftChild ] != null) {
 				swapWith = leftChild;
-			} else {
-				//swap with right child
+			} else if (heap[ rightChild ] != null) {
 				swapWith = rightChild;
+			} else {
+				System.out.println("went to break.");
+				break;
 			}
+
 			//swap.
 			swapCache = heap[ swapWith ];
 			heap[ swapWith ] = heap[ parent ];
