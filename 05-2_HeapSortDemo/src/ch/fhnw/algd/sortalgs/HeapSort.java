@@ -23,6 +23,7 @@ public class HeapSort implements SortAlg {
 	}
 
 	private void toFloydMaxHeap(SortData data) {
+		//Explanation: https://www.youtube.com/watch?v=ixdWTKWSz7s
 		// n/2 = first leaf node. n/2 - 1 = last inner node and start index.
 		for (int i = (data.size() / 2 - 1); i >= 0; --i) {
 			System.out.println(" node nr. " + i);
@@ -51,6 +52,7 @@ public class HeapSort implements SortAlg {
 	}
 
 	private void sort(SortData data) {
+		//Explenation: https://www.youtube.com/watch?v=2DmK_H7IdTo
 		int i = data.size() - 1;
 		while ( i >= 0) {
 			data.swap(0, i);
