@@ -37,10 +37,12 @@ public final class AdjListGraph<K> extends AbstractGraph<K> {
 		this(false);
 	}
 
+
+
 	@Override
 	public boolean addVertex(K vertex) {
 		if (vertex != null && !vertices.containsKey(vertex)) {
-			// TODO Einfuegen des neuen Knotens in HashMap
+			vertices.put(vertex, new Vertex<K>(vertex));
 			return true;
 		} else {
 			return false;
@@ -52,8 +54,11 @@ public final class AdjListGraph<K> extends AbstractGraph<K> {
 		Vertex<K> vf = vertices.get(from);
 		Vertex<K> vt = vertices.get(to);
 		if (vf != null && vt != null && !vf.adjList.contains(vt)) {
-			// TODO Kante einfuegen, es muss dabei unterschieden werden, ob der
+			// Done Kante einfuegen, es muss dabei unterschieden werden, ob der
 			// Graph gerichtet ist oder nicht.
+			vf.adjList.add(vt);
+			if (!this.isDirected())
+				vt.adjList.add(vf);
 			return true;
 		} else {
 			return false;
@@ -95,8 +100,13 @@ public final class AdjListGraph<K> extends AbstractGraph<K> {
 	@Override
 	public Set<K> getAdjacentVertices(K vertex) {
 		Set<K> set = new HashSet<K>();
-		// TODO Alle data-Objekte, die in den benachbarten
+		// Done Alle data-Objekte, die in den benachbarten
 		// Knoten gespeichert sind, in set einf�gen
+
+		Vertex<K> v = vertices.get(vertex);
+		for (Vertex<K> to : v.adjList) {
+			set.add(to.data);
+		}
 		return set;
 	}
 
