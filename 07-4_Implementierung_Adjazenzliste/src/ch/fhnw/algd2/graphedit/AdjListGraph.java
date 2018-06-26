@@ -19,7 +19,8 @@ public final class AdjListGraph<K> extends AbstractGraph<K> {
 
 	private Map<K, Vertex<K>> vertices;
 
-
+	private int noOfVertices = 0;
+	private int noOfEdges = 0;
 
 	public AdjListGraph() { // default constructor
 		this(false);
@@ -31,10 +32,24 @@ public final class AdjListGraph<K> extends AbstractGraph<K> {
 	}
 
 	public AdjListGraph(AdjListGraph<K> orig) { // copy
-																															// constructor
+		//Deep copy in Java? https://stackoverflow.com/questions/16436591/deep-copy-of-a-generic-type-in-java
+
 		// TODO Loeschen Sie folgende Zeile und programmieren Sie
 		// einen Konstruktor, der eine Kopie von orig erstellt.
-		this(false);
+		this(orig.isDirected());
+		//recreate vertices
+		for (K key : orig.vertices.keySet()) {
+			addVertex(key);
+		}
+		//recreate edges
+		for (K key : orig.vertices.keySet()) {
+			List<Vertex<K>> origAdjList = orig.vertices.get(key).adjList;
+			Vertex<K> vf = vertices.get(key);
+			for (Vertex<K> vt : origAdjList) {
+				addEdge(vf.data, vt.data);
+			}
+		}
+
 	}
 
 
@@ -43,6 +58,7 @@ public final class AdjListGraph<K> extends AbstractGraph<K> {
 	public boolean addVertex(K vertex) {
 		if (vertex != null && !vertices.containsKey(vertex)) {
 			vertices.put(vertex, new Vertex<K>(vertex));
+			noOfVertices++;
 			return true;
 		} else {
 			return false;
@@ -56,9 +72,11 @@ public final class AdjListGraph<K> extends AbstractGraph<K> {
 		if (vf != null && vt != null && !vf.adjList.contains(vt)) {
 			// Done Kante einfuegen, es muss dabei unterschieden werden, ob der
 			// Graph gerichtet ist oder nicht.
-			vf.adjList.add(vt);
-			if (!this.isDirected())
-				vt.adjList.add(vf);
+			vf.addEdgeTo(vt);
+			if (!this.isDirected()) {
+				vt.addEdgeTo(vf); // == adjList.add(vf)
+			}
+			noOfEdges++;
 			return true;
 		} else {
 			return false;
@@ -72,6 +90,10 @@ public final class AdjListGraph<K> extends AbstractGraph<K> {
 		if (vf != null && vt != null && vf.adjList.contains(vt)) {
 			// TODO Kante loeschen, es muss dabei unterschieden werden, ob der
 			// Graph gerichtet ist oder nicht.
+			vf.adjList.remove(vt);
+			if (!this.isDirected())
+				vt.adjList.remove(vf);
+			noOfEdges--;
 			return true;
 		} else {
 			return false;
@@ -80,16 +102,16 @@ public final class AdjListGraph<K> extends AbstractGraph<K> {
 
 	@Override
 	public int getNofVertices() {
-		// TODO Ersetzen Sie die folgende Zeile durch eine effizientere
+		// Done Ersetzen Sie die folgende Zeile durch eine effizientere
 		// Implementation
-		return super.getNofVertices();
+		return noOfVertices;
 	}
 
 	@Override
 	public int getNofEdges() {
-		// TODO Ersetzen Sie die folgende Zeile durch eine effizientere
+		// Done Ersetzen Sie die folgende Zeile durch eine effizientere
 		// Implementation
-		return super.getNofEdges();
+		return noOfEdges;
 	}
 
 	@Override
