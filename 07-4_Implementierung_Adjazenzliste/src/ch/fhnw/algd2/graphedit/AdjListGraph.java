@@ -2,25 +2,34 @@ package ch.fhnw.algd2.graphedit;
 
 import java.util.*;
 
-public final class AdjListGraph<K> extends AbstractGraph<K> {
+public final class AdjListGraph<K> extends AbstractGraph<K> implements
+        GraphAlgorithms.TopSort {
 	private static class Vertex<K> {
 		K data;
 		List<Vertex<K>> adjList = new LinkedList<Vertex<K>>();
+		int indegree = 0;
+		int topoIndegree;
 
 		Vertex(K vertex) {
 			data = vertex;
 		}
 
 		boolean addEdgeTo(Vertex<K> to) {
-			return (adjList.contains(to)) ? false : adjList.add(to);
+		    if (adjList.contains(to)) return false;
+		    to.indegree++;
+		    return adjList.add(to);
 		}
+
+        boolean removeEdgeTo(Vertex<K> to) {
+            if (!adjList.contains(to)) return false;
+            to.indegree--;
+            return adjList.remove(to);
+        }
 	}
 
 
 	private Map<K, Vertex<K>> vertices;
-
-	private int noOfVertices = 0;
-	private int noOfEdges = 0;
+    private int noOfEdges = 0;
 
 	public AdjListGraph() { // default constructor
 		this(false);
@@ -34,7 +43,7 @@ public final class AdjListGraph<K> extends AbstractGraph<K> {
 	public AdjListGraph(AdjListGraph<K> orig) { // copy
 		//Deep copy in Java? https://stackoverflow.com/questions/16436591/deep-copy-of-a-generic-type-in-java
 
-		// TODO Loeschen Sie folgende Zeile und programmieren Sie
+		// Done Loeschen Sie folgende Zeile und programmieren Sie
 		// einen Konstruktor, der eine Kopie von orig erstellt.
 		this(orig.isDirected());
 		//recreate vertices
@@ -58,7 +67,6 @@ public final class AdjListGraph<K> extends AbstractGraph<K> {
 	public boolean addVertex(K vertex) {
 		if (vertex != null && !vertices.containsKey(vertex)) {
 			vertices.put(vertex, new Vertex<K>(vertex));
-			noOfVertices++;
 			return true;
 		} else {
 			return false;
@@ -88,11 +96,11 @@ public final class AdjListGraph<K> extends AbstractGraph<K> {
 		Vertex<K> vf = vertices.get(from);
 		Vertex<K> vt = vertices.get(to);
 		if (vf != null && vt != null && vf.adjList.contains(vt)) {
-			// TODO Kante loeschen, es muss dabei unterschieden werden, ob der
+			// Done Kante loeschen, es muss dabei unterschieden werden, ob der
 			// Graph gerichtet ist oder nicht.
-			vf.adjList.remove(vt);
+			vf.removeEdgeTo(vt);
 			if (!this.isDirected())
-				vt.adjList.remove(vf);
+				vt.removeEdgeTo(vf);
 			noOfEdges--;
 			return true;
 		} else {
@@ -104,7 +112,7 @@ public final class AdjListGraph<K> extends AbstractGraph<K> {
 	public int getNofVertices() {
 		// Done Ersetzen Sie die folgende Zeile durch eine effizientere
 		// Implementation
-		return noOfVertices;
+		return vertices.size();
 	}
 
 	@Override
@@ -136,4 +144,45 @@ public final class AdjListGraph<K> extends AbstractGraph<K> {
 	public Object clone() {
 		return new AdjListGraph<K>(this);
 	}
+
+
+	//------------------- TopoSort --------------------------
+    public void sort() {
+        StringBuffer sb = new StringBuffer();
+        if( !isDirected() ) {
+            sb.append("Graph is undirected. Topological search impossible");
+            System.out.println(sb);
+            return;
+        }
+
+        //1) Für alle Knoten den Eingangsgrad bestimmen
+        //2) Alle Knoten mit Eingangsgrad 0 in einem Set sammeln
+        LinkedList<Vertex<K>> queue = new LinkedList<>();
+        for (Vertex<K> v : vertices.values()) {
+            v.topoIndegree = v.indegree;
+            if (v.topoIndegree == 0) queue.add(v);
+        }
+
+        while (!queue.isEmpty()) {
+            Vertex<K> current = queue.removeFirst();
+            sb.append(current.data + " ");
+            for (Vertex<K> adjacent : current.adjList) {
+                adjacent.topoIndegree--;
+                if (adjacent.topoIndegree == 0) queue.add(adjacent);
+            }
+        }
+
+        if (isCyclic())
+            sb.replace(0, sb.length(), "Graph is cyclic. Topological search impossible");
+
+        System.out.println(sb);
+    }
+
+    private boolean isCyclic() {
+	    //Done: implement algorithm to determine cyclic structure.
+	    return vertices.values().stream().anyMatch(v -> v.topoIndegree != 0);
+	    // Alternative: int counter
+	    //  - in while(!queue.isEmpty() counter++;
+        // if(counter != vertices.size()) graph is cyclic
+    }
 }
