@@ -3,12 +3,14 @@ package ch.fhnw.algd2.graphedit;
 import java.util.*;
 
 public final class AdjListGraph<K> extends AbstractGraph<K> implements
-        GraphAlgorithms.TopSort {
-	private static class Vertex<K> {
+        GraphAlgorithms.TopSort, GraphAlgorithms.DFS<K> {
+    private static class Vertex<K> {
 		K data;
 		List<Vertex<K>> adjList = new LinkedList<Vertex<K>>();
-		int indegree = 0;
-		int topoIndegree;
+		//topological search
+		int indegree = 0, topoIndegree;
+		//DFS
+        boolean isVisited;
 
 		Vertex(K vertex) {
 			data = vertex;
@@ -184,5 +186,85 @@ public final class AdjListGraph<K> extends AbstractGraph<K> implements
 	    // Alternative: int counter
 	    //  - in while(!queue.isEmpty() counter++;
         // if(counter != vertices.size()) graph is cyclic
+    }
+
+
+    /*
+    Frage: Warum verschwinden alle Kanten, und danach alle KNoten? (2x DFS drücken).
+
+    @Override
+    public Graph<K> traverse(K startVertex) {
+	    //1) Alle Knoten als bisher nicht besucht markieren
+	    for (Vertex<K> v : vertices.values()) {
+	        v.isVisited = false;
+        }
+        //1.b) Spannbaum vorbereiten
+        Graph<K> spantree = new AdjListGraph<K>( isDirected() );
+        //2) dfs(startKnoten) aufrufen
+        System.out.println();
+        dfs( vertices.get(startVertex), spantree );
+        return spantree;
+    }
+
+    private void dfs(Vertex<K> v, Graph<K> sp) {
+        if(!v.isVisited) {
+            System.out.print(v.data + " ");
+            sp.addVertex(v.data);
+            v.isVisited = true;
+            for (Vertex<K> adjacent : v.adjList) {
+                if (!adjacent.isVisited) {
+                    sp.addEdge(v.data, adjacent.data);
+                    dfs( adjacent, sp );
+                }
+            }
+        }
+    }
+    */
+
+    /**
+     * A helper method doing the actual work of depth-first-traversing the graph.
+     * It prints the vertices visited to the console and constructs a new graph,
+     * which represents the spanning tree constructed by this traversal. Works
+     * recursively.
+     *
+     * @param root
+     *          staring vertex for this level of the recursion.
+     * @param spanningTree
+     *          the graph that represents the spanning tree to construct.
+     */
+    private void dfs(Vertex<K> root, Graph<K> spanningTree) {
+        System.out.print(root.data + "  ");
+        root.visited = true;
+        for (Vertex<K> v : root.adjList) {
+            if (!v.visited) {
+                spanningTree.addVertex(v.data);
+                spanningTree.addEdge(root.data, v.data);
+                dfs(v, spanningTree);
+            }
+        }
+    }
+
+    /**
+     * Perform a depth-first-search on this graph, starting at the given vertex. A
+     * DFS order will be printed to the console and a spanning tree (represented
+     * by a newly constructed graph object) will be returned. This method works on
+     * both, directed and undirected graphs!
+     *
+     * @param startVertex
+     *          begin the depth-first-search here.
+     */
+    public Graph<K> traverse(K startVertex) {
+        Graph<K> spanningTree = new AdjListGraph<K>(isDirected());
+        Vertex<K> v = vertices.get(startVertex);
+        if (v != null) {
+            for (Vertex<K> w : vertices.values())
+                w.visited = false;
+            spanningTree.addVertex(startVertex);
+            dfs(v, spanningTree);
+            System.out.println();
+        } else {
+            System.out.println("unknown starting vertex");
+        }
+        return spanningTree;
     }
 }
